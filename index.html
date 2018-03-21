@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <title>Node Js</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            
+        </script>
+    </head>
+    <body>
+        <h2>Node js with socket and http server</h2> 
+        <h4 id='welcomeMessageHeader'></h4>
+
+        <input type="text" id='txtInput' placeholder="Enter your name">
+
+        <button id='sendToServerButton'>Say thanks to server</button>
+        <br><br>
+        <textarea rows="3" cols="30" id='txtAreaMessage' placeholder="Enter message"> </textarea>
+        <br>
+        <button id='sendMsgToServer'>Send message to server</button>
+
+        <br><br>
+        <h3 id='msgToAll'></h3>
+        <script>
+            var socket=io.connect('http://localhost:3000');
+            socket.on('welcomeMessageFromServer' , function(message) {
+                document.getElementById('welcomeMessageHeader').innerText = message ;
+            })
+
+            $('#sendToServerButton').on('click' , function() {
+                var name = $('#txtInput').val();
+                socket.emit('clients_name' , name);
+            })
+
+            $('#sendMsgToServer').on('click' , function() {
+                var msg = $('#txtAreaMessage').val();
+                socket.emit('messageFromClientToServer' , msg);
+            })
+
+            socket.on('msgFromServerToClient',function(msg){
+                document.getElementById('welcomeMessageHeader').innerText = msg ;
+            })
+
+            socket.on('msgToAllClients' , function(msg) {
+                document.getElementById('msgToAll').innerText = msg
+            })
+        </script>
+
+    </body>
+</html>
